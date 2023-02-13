@@ -1,0 +1,34 @@
+name: Plugin CD
+
+on:
+  release:
+    types: [created]
+
+jobs:
+  deployment:
+
+    environment: CD # use CD env
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: checkout
+        uses: actions/checkout@v3
+
+      - name: setup
+        uses: actions/setup-java@v3
+        with:
+          java-version: 17
+          distribution: temurin
+
+      - uses: s4u/maven-settings-action@v2.8.0
+        with:
+          servers: |
+            [{
+              "id": "azalea-repo",
+              "username": "${{ secrets.REPO_USERNAME }}",
+              "password": "${{ secrets.REPO_PASSWORD }}"
+            }]
+
+      - name: deploy
+        run:  mvn clean test deploy -ntp
