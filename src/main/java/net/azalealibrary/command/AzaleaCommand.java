@@ -16,15 +16,4 @@ public final class AzaleaCommand extends JavaPlugin {
     public AzaleaCommand(JavaPluginLoader loader, PluginDescriptionFile description, File dataFolder, File file) {
         super(loader, description, dataFolder, file);
     }
-
-    @Override
-    public void onLoad() {
-        CommandNode.register(this, ConfigureCommand.class);
-    }
-
-    @Override
-    public void onEnable() { }
-
-    @Override
-    public void onDisable() { }
 }

@@ -8,6 +8,10 @@ public class AzaleaException extends RuntimeException {
         messages = new String[0];
     }
 
+    public AzaleaException(String message) {
+        this(message, new String[0]);
+    }
+
     public AzaleaException(String message, String... messages) {
         super(message);
         this.messages = messages;
