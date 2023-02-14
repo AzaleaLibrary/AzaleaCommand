@@ -6,7 +6,7 @@ import org.bukkit.plugin.Plugin;
 
 import java.lang.reflect.Field;
 
-public final class CommandApi {
+public final class AzaleaCommandApi {
 
     public static void register(Plugin plugin, Class<? extends CommandNode> command) {
         try {
