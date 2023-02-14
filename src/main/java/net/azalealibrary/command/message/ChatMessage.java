@@ -40,7 +40,7 @@ public class ChatMessage extends Message {
             player.spigot().sendMessage(withPrefix);
         } else {
             int width = 60 - ChatColor.stripColor(prefix).length(); // width of output terminal
-            List<String> messages = TextUtil.split(getMessage(), width, "");
+            List<String> messages = TextUtil.split(getMessage(), width);
 
             for (String line : messages) {
                 target.sendMessage(prefix + line.trim());
