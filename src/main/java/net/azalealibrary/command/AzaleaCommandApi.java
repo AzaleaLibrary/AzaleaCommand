@@ -15,7 +15,7 @@ public final class AzaleaCommandApi {
             CommandMap map = (CommandMap) field.get(Bukkit.getServer());
             map.register(plugin.getName(), command.getConstructor().newInstance());
         } catch (Exception exception) {
-            throw new AzaleaException("An error occurred while registering command.", exception.getMessage());
+            throw new AzaleaException("An error occurred while registering command.", exception);
         }
     }
 }

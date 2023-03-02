@@ -17,6 +17,11 @@ public class AzaleaException extends RuntimeException {
         this.messages = messages;
     }
 
+    public AzaleaException(String message, Throwable throwable) {
+        super(message, throwable);
+        messages = new String[0];
+    }
+
     public String[] getMessages() {
         return messages;
     }
