@@ -13,7 +13,7 @@
 
     <groupId>net.azalealibrary</groupId>
     <artifactId>command</artifactId>
-    <version>1.0</version>
+    <version>1.0.0</version>
 
     <repositories>
         <repository>
@@ -56,6 +56,8 @@
     </dependencies>
 
     <build>
+        <finalName>azalea-${project.artifactId}-v${project.version}-${mcVersion}.jar</finalName>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -72,6 +74,7 @@
                             <groupId>${project.groupId}</groupId>
                             <artifactId>${project.artifactId}</artifactId>
                             <version>${project.version}</version>
+                            <destFileName>${build.finalName}</destFileName>
                             <overWrite>true</overWrite>
                         </artifactItem>
                     </artifactItems>
