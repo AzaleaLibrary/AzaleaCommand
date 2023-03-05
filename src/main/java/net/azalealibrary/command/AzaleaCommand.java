@@ -9,6 +9,7 @@ import java.io.File;
 
 @SuppressWarnings("unused")
 @Plugin(name = "AzaleaCommand", version = "1.0")
+@ApiVersion(ApiVersion.Target.v1_19)
 public final class AzaleaCommand extends JavaPlugin {
 
     public AzaleaCommand() { }
