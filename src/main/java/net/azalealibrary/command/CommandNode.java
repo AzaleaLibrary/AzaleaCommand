@@ -73,7 +73,8 @@ public class CommandNode extends Command {
     }
 
     public List<String> complete(CommandSender sender, Arguments arguments) {
-        return getChildren(sender, arguments).stream().filter(n -> n.testPermissionSilent(sender)).map(Command::getName).toList();
+        List<String> children = getChildren(sender, arguments).stream().filter(n -> n.testPermissionSilent(sender)).map(Command::getName).toList();
+        return TextUtil.matching(arguments.getLast(), children);
     }
 
     private static void handleException(CommandSender sender, Exception exception) {

@@ -2,6 +2,7 @@ package net.azalealibrary.command;
 
 import org.bukkit.ChatColor;
 import org.bukkit.map.MinecraftFont;
+import org.bukkit.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,5 +26,12 @@ public final class TextUtil {
             }
         }
         return lines.stream().map(String::trim).filter(l -> !l.isBlank()).collect(Collectors.toList());
+    }
+
+    public static List<String> matching(String text, List<String> completions) {
+        List<String> matching = new ArrayList<>();
+        StringUtil.copyPartialMatches(text, completions, matching);
+        Collections.sort(matching);
+        return matching;
     }
 }
