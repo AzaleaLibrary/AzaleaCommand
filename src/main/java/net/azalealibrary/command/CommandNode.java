@@ -46,7 +46,8 @@ public class CommandNode extends Command {
         if (arguments.size() > 1) {
             try {
                 Map.Entry<CommandNode, Arguments> pair = getClosestMatch(sender, getChildren(sender, arguments), arguments, 0, this);
-                return Optional.ofNullable(pair.getKey()).map(n -> n.complete(sender, pair.getValue())).orElse(new ArrayList<>());
+                List<String> options = Optional.ofNullable(pair.getKey()).map(n -> n.complete(sender, pair.getValue())).orElse(new ArrayList<>());
+                return TextUtil.matching(arguments.getLast(), options);
             } catch (AzaleaException ignored) {
                 return List.of(); // ignore exception
             } catch (Exception exception) {
@@ -73,8 +74,7 @@ public class CommandNode extends Command {
     }
 
     public List<String> complete(CommandSender sender, Arguments arguments) {
-        List<String> children = getChildren(sender, arguments).stream().filter(n -> n.testPermissionSilent(sender)).map(Command::getName).toList();
-        return TextUtil.matching(arguments.getLast(), children);
+        return getChildren(sender, arguments).stream().filter(n -> n.testPermissionSilent(sender)).map(Command::getName).toList();
     }
 
     private static void handleException(CommandSender sender, Exception exception) {
