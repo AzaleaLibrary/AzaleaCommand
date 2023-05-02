@@ -77,6 +77,22 @@ public class CommandNode extends Command {
         return getChildren(sender, arguments).stream().filter(n -> n.testPermissionSilent(sender)).map(Command::getName).toList();
     }
 
+    @Override
+    public boolean testPermissionSilent(@Nonnull CommandSender target) {
+        String permission = getPermission();
+
+        if (permission == null || permission.length() == 0) {
+            return true;
+        }
+
+        for (String sub : permission.split(";")) {
+            if (target.hasPermission(sub)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private static void handleException(CommandSender sender, Exception exception) {
         String message = exception.getMessage() != null ? exception.getMessage() : exception.toString();
         System.err.println(message);
