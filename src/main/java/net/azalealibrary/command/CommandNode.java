@@ -16,7 +16,7 @@ public class CommandNode extends Command {
         this.children = List.of(children);
     }
 
-    public List<CommandNode> getChildren(CommandSender sender, Arguments arguments) {
+    public List<CommandNode> getChildren() {
         return children;
     }
 
@@ -24,15 +24,8 @@ public class CommandNode extends Command {
     public final boolean execute(@Nonnull CommandSender sender, @Nonnull String label, String[] args) {
         try {
             Arguments arguments = new Arguments(this, List.of(args));
-            Map.Entry<CommandNode, Arguments> pair = getClosestMatch(sender, getChildren(sender, arguments), arguments, 0, this);
+            Map.Entry<CommandNode, Arguments> pair = getClosestMatch(sender, children, arguments, 0, this);
             Optional.ofNullable(pair.getKey()).ifPresent(n -> n.execute(sender, pair.getValue()));
-        } catch (AzaleaException exception) {
-            List<String> cropped = new ArrayList<>(TextUtil.split(exception.getMessage(), 46));
-
-            for (String message : exception.getMessages()) {
-                cropped.addAll(TextUtil.split(message, 62));
-            }
-            cropped.forEach(m -> ChatMessage.error(m).post("AZA", sender));
         } catch (Exception exception) {
             handleException(sender, exception);
         }
@@ -45,7 +38,7 @@ public class CommandNode extends Command {
 
         if (arguments.size() > 1) {
             try {
-                Map.Entry<CommandNode, Arguments> pair = getClosestMatch(sender, getChildren(sender, arguments), arguments, 0, this);
+                Map.Entry<CommandNode, Arguments> pair = getClosestMatch(sender, children, arguments, 0, this);
                 List<String> options = Optional.ofNullable(pair.getKey()).map(n -> n.complete(sender, pair.getValue())).orElse(new ArrayList<>());
                 return TextUtil.matching(arguments.getLast(), options);
             } catch (AzaleaException ignored) {
@@ -66,7 +59,7 @@ public class CommandNode extends Command {
         if (child == null) {
             return new AbstractMap.SimpleEntry<>(node, arguments.subArguments(depth));
         }
-        return getClosestMatch(sender, child.getChildren(sender, arguments.subArguments(depth)), arguments, depth + 1, child);
+        return getClosestMatch(sender, child.children, arguments, depth + 1, child);
     }
 
     public void execute(CommandSender sender, Arguments arguments) {
@@ -74,7 +67,7 @@ public class CommandNode extends Command {
     }
 
     public List<String> complete(CommandSender sender, Arguments arguments) {
-        return getChildren(sender, arguments).stream().filter(n -> n.testPermissionSilent(sender)).map(Command::getName).toList();
+        return children.stream().filter(n -> n.testPermissionSilent(sender)).map(Command::getName).toList();
     }
 
     @Override
@@ -94,12 +87,19 @@ public class CommandNode extends Command {
     }
 
     private static void handleException(CommandSender sender, Exception exception) {
-        String message = exception.getMessage() != null ? exception.getMessage() : exception.toString();
-        System.err.println(message);
-        exception.printStackTrace();
+        if (exception instanceof AzaleaException azaleaException) {
+            List<String> cropped = new ArrayList<>(TextUtil.split(exception.getMessage(), 46));
 
-        for (String line : TextUtil.split(message, 62)) {
-            ChatMessage.error(line).post("AZA", sender);
+            for (String message : azaleaException.getMessages()) {
+                cropped.addAll(TextUtil.split(message, 62));
+            }
+            cropped.forEach(m -> ChatMessage.error(m).post("AZA", sender));
+        } else {
+            String message = exception.getMessage() != null ? exception.getMessage() : exception.toString();
+            System.err.println(message);
+            exception.printStackTrace();
+
+            TextUtil.split(message, 62).forEach(line -> ChatMessage.error(line).post("AZA", sender));
         }
     }
 }
